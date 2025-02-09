@@ -1,0 +1,5 @@
+kafka-python
+requests
+pandas
+matplotlib
+python-dotenv
