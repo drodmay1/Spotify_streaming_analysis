@@ -46,12 +46,12 @@ bash zookeeper-server-start.sh ../config/zookeeper.properties
 bash kafka-server-start.sh ../config/server.properties
 ```
 
-### **R**un Kafka Producer**
+### **Run Kafka Producer**
 ```
 python producers/spotify_producer.py
 ```
 
-## **Run Kafka Consumer**
+### **Run Kafka Consumer**
 ```
 python consumers/spotify_consumer.py
 ```
