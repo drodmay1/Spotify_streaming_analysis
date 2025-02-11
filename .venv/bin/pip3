@@ -1,4 +1,4 @@
-#!/Users/davidrodriguez/Documents/44671_6/Spotify_streaming_analysis/Spotify_streaming_analysis/.venv/bin/python3.11
+#!/Users/davidrodriguez/Documents/44671_6/Spotify_streaming_analysis/Spotify_streaming_analysis/.venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
