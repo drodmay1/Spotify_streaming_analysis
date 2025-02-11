@@ -13,7 +13,6 @@ sys.path.append(project_root)
 # Import SQLite functions
 from utils.db_utils import create_table, insert_stream  
 
-
 # Initialize Kafka Consumer
 consumer = KafkaConsumer(
     'spotify_streams',
