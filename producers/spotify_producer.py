@@ -2,16 +2,21 @@ import os
 import pandas as pd
 import json
 import time
+import random
 from kafka import KafkaProducer
+from datetime import datetime
 
-# Directly using the absolute path to the CSV file
-file_path = '/Users/davidrodriguez/Documents/44671_6/Spotify_streaming_analysis/Spotify_streaming_analysis/data/spotify-2023_utf8.csv'
-
-# Print the file path to debug
-print(f"Using file path: {file_path}")
+# Path to the dataset
+file_path = '../data/Spotify_Dataset.csv'  # Move one directory up
 
 # Load the data into a DataFrame
 df = pd.read_csv(file_path)
+
+# Convert streams to integer (if not already)
+df['streams'] = df['streams'].astype(int)
+
+# Fill missing values
+df.fillna({'track_name': 'Unknown', 'artist(s)_name': 'Unknown', 'streams': 0, 'genre': 'Unknown'}, inplace=True)
 
 # Initialize the Kafka producer
 producer = KafkaProducer(
@@ -19,20 +24,33 @@ producer = KafkaProducer(
     value_serializer=lambda v: json.dumps(v).encode('utf-8')
 )
 
-# Define the topic
+# Define the Kafka topic
 KAFKA_TOPIC = 'spotify_streams'
 
-# Function to send data
+# Function to simulate real-time streaming with random data
 def send_data():
-    for index, row in df.iterrows():
+    while True:
+        # Randomly select a song from the dataset
+        random_row = df.sample(n=1).iloc[0]
+
+        # Simulate dynamic streaming counts
+        random_streams = random.randint(50000, 5000000)
+
+        # Create the message
         message = {
-            'track': row['track_name'],
-            'artist': row['artist(s)_name'],
-            'streams': row['streams']
+            'track': random_row['track_name'],
+            'artist': random_row['artist(s)_name'],
+            'streams': random_streams,  # Simulated new stream count
+            'genre': random_row['genre'],
+            'timestamp': datetime.utcnow().isoformat()
         }
+
+        # Send the message to Kafka
         producer.send(KAFKA_TOPIC, message)
         print(f"Sent: {message}")
-        time.sleep(1)  # Send a message every second to simulate real-time data
 
-# Start sending data
+        # Random delay between messages (0.5 to 2 seconds)
+        time.sleep(random.uniform(0.5, 2))
+
+# Start streaming indefinitely
 send_data()
