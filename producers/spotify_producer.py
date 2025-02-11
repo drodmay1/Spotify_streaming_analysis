@@ -1,27 +1,38 @@
-from kafka import KafkaProducer
+import os
+import pandas as pd
 import json
 import time
+from kafka import KafkaProducer
 
-# Define Kafka settings
-KAFKA_BROKER = "localhost:9092"
-KAFKA_TOPIC = "spotify_streams"
+# Directly using the absolute path to the CSV file
+file_path = '/Users/davidrodriguez/Documents/44671_6/Spotify_streaming_analysis/Spotify_streaming_analysis/data/spotify-2023_utf8.csv'
 
-# Create a Kafka producer
+# Print the file path to debug
+print(f"Using file path: {file_path}")
+
+# Load the data into a DataFrame
+df = pd.read_csv(file_path)
+
+# Initialize the Kafka producer
 producer = KafkaProducer(
-    bootstrap_servers=KAFKA_BROKER,
-    value_serializer=lambda v: json.dumps(v).encode("utf-8")
+    bootstrap_servers='localhost:9092',
+    value_serializer=lambda v: json.dumps(v).encode('utf-8')
 )
 
-# Sample messages (you will replace this with real Spotify data later)
-sample_data = [
-    {"track": "Seven", "artist": "Jung Kook", "streams": 500000},
-    {"track": "LALA", "artist": "Myke Towers", "streams": 400000},
-    {"track": "vampire", "artist": "Olivia Rodrigo", "streams": 600000}
-]
+# Define the topic
+KAFKA_TOPIC = 'spotify_streams'
 
-for message in sample_data:
-    producer.send(KAFKA_TOPIC, message)
-    print(f"Sent: {message}")
-    time.sleep(1)  # Delay for readability
+# Function to send data
+def send_data():
+    for index, row in df.iterrows():
+        message = {
+            'track': row['track_name'],
+            'artist': row['artist(s)_name'],
+            'streams': row['streams']
+        }
+        producer.send(KAFKA_TOPIC, message)
+        print(f"Sent: {message}")
+        time.sleep(1)  # Send a message every second to simulate real-time data
 
-producer.close()
+# Start sending data
+send_data()
