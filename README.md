@@ -66,7 +66,7 @@ streamlit run dashboard.py
 streamlit run sentiment_dashboard.py
 ```
 
-## **Save and Push it to GitHub!
+## **Save and Push it to GitHub!**
 ```
 git add README.md
 git commit -m "Added project README"
