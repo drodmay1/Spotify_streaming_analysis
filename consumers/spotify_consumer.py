@@ -29,6 +29,9 @@ def compute_sentiment(valence, energy=0.5, danceability=0.5):
 print("📥 Listening for new messages...")
 for message in consumer:
     data = message.value
+
+    # Debugging: Print the received message
+    print(f"Received message: {data}")
     
     track = data['track']
     artist = data['artist']
