@@ -4,6 +4,7 @@
 ## **Overview**
 This project is a real-time streaming data pipeline built using Kafka, SQLite, and Streamlit to analyze Spotify music trends. 
 It allows real-time tracking of streamed songs, sentiment analysis, and genre distribution, and displays interactive dashboards.
+Custom consumer `spotify_consumer` reads streamed music data, calculates sentiment scores, and stores the results in a SQLite database for real-time analysis and visualization.
 
 ## **Features**
 - **Kafka-based Streaming Pipeline**: Streams data from a Spotify dataset in real-time.  
