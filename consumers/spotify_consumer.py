@@ -2,6 +2,7 @@ import sys
 import os
 import json
 import time
+from datetime import datetime
 from kafka import KafkaConsumer
 
 # Ensure the script finds the project root
@@ -30,17 +31,25 @@ for message in consumer:
     # Read the message as a dictionary (already deserialized)
     data = message.value
 
-    # DEBUG: Print received message timestamp
-    print(f"DEBUG: Received message timestamp: {data['timestamp']}")
+    # DEBUG: Print the entire message
+    print(f"DEBUG: Full received message: {data}")
 
+    # Extract values
     track = data.get('track', 'Unknown')
     artist = data.get('artist', 'Unknown')
     streams = data.get('streams', 0)
     genre = data.get('genre', 'Unknown')
-    timestamp = data.get('timestamp', None) # Ensure timestamp is extracted
 
-    # DEBUG: Print extracted timestamp to confirm it's being used
-    print(f"DEBUG: Extracted timestamp before insertion: {timestamp}")
+    # Extract and validate timestamp
+    raw_timestamp = data.get('timestamp', 'Unknown')
+
+    try:
+        timestamp = datetime.fromisoformat(raw_timestamp).isoformat()  # Ensure correct format
+    except ValueError:
+        print(f"⚠️ WARNING: Invalid timestamp format received: {raw_timestamp}")
+        timestamp = raw_timestamp  # Store the original timestamp for debugging
+
+    print(f"DEBUG: Final timestamp stored: {timestamp}")  # Debugging
 
     # Extract valence, energy, and danceability properly
     valence = float(data.get("valence", 0.5))
