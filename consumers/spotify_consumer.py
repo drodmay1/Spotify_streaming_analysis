@@ -6,6 +6,7 @@ from kafka import KafkaConsumer
 
 # Ensure the script finds the project root
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../utils")))
 
 from utils.db_utils import create_table, insert_stream
 
@@ -29,7 +30,7 @@ for message in consumer:
     # Read the message as a dictionary (already deserialized)
     data = message.value
 
-    # Debugging: Print the raw message
+    # Debugging: Print the full received message
     print(f"DEBUG: Full received message: {json.dumps(data, indent=2)}")
 
     track = data.get('track', 'Unknown')
@@ -44,13 +45,13 @@ for message in consumer:
     danceability = float(data.get("danceability", 0.5))
 
     # Debugging: Print extracted sentiment values
-    print(f"Extracted -> Valence: {valence}, Energy: {energy}, Danceability: {danceability}")
+    print(f"DEBUG: Raw values -> Valence: {valence}, Energy: {energy}, Danceability: {danceability}")
 
     # Compute sentiment score
     sentiment_score = compute_sentiment(valence, energy, danceability)
 
     # Debugging: Print computed sentiment score
-    print(f"Computed Sentiment Score: {sentiment_score}")
+    print(f"DEBUG: Computed Sentiment Score: {sentiment_score}")
 
     # Store in SQLite database
     insert_stream(track, artist, streams, genre, sentiment_score, timestamp)

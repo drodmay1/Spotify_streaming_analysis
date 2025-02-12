@@ -4,10 +4,18 @@ import json
 import time
 import random
 from kafka import KafkaProducer
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Path to the dataset
-file_path = '../data/Spotify_Dataset.csv'  # Move one directory up
+file_path = 'data/Spotify_Dataset.csv'  # Ensure correct path and filename
+
+# Debugging: Print absolute path to check if the file exists
+absolute_path = os.path.abspath(file_path)
+print(f"DEBUG: Looking for dataset at {absolute_path}")
+
+# Try opening the file manually
+if not os.path.exists(absolute_path):
+    raise FileNotFoundError(f"ERROR: File not found at {absolute_path}")
 
 # Load the data into a DataFrame
 df = pd.read_csv(file_path)
@@ -21,7 +29,7 @@ df.fillna({'track_name': 'Unknown', 'artist(s)_name': 'Unknown', 'streams': 0, '
 # Initialize the Kafka producer
 producer = KafkaProducer(
     bootstrap_servers='localhost:9092',
-    value_serializer=lambda v: json.dumps(v).encode('utf-8')  # Ensures JSON serialization
+    value_serializer=lambda v: json.dumps(v).encode('utf-8')
 )
 
 # Define the Kafka topic
@@ -36,6 +44,15 @@ def send_data():
         # Simulate dynamic streaming counts
         random_streams = random.randint(50000, 5000000)
 
+        # Generate timestamps spread over the last 7 days
+        random_timestamp = (
+            datetime.utcnow() - timedelta(
+                days=random.randint(0, 6), 
+                hours=random.randint(0, 23), 
+                minutes=random.randint(0, 59)
+            )
+        ).isoformat()
+
         # Create the message
         message = {
             'track': random_row['track_name'],
@@ -45,14 +62,12 @@ def send_data():
             'valence': round(random.uniform(0, 1), 2),  # Random valence score between 0 and 1
             'energy': round(random.uniform(0, 1), 2),  # Random energy level
             'danceability': round(random.uniform(0, 1), 2),  # Random danceability level
-            'timestamp': datetime.utcnow().isoformat()
+            'timestamp': random_timestamp  # New timestamp logic
         }
 
-        # Debugging: Print message before sending
-        print(f"DEBUG: Message being sent to Kafka: {json.dumps(message, indent=2)}")
-
         # Send the message to Kafka
-        producer.send(KAFKA_TOPIC, value=message)
+        print(f"DEBUG: Sending message: {json.dumps(message, indent=2)}")  # Debugging print
+        producer.send(KAFKA_TOPIC, message)
 
         # Random delay between messages (0.5 to 2 seconds)
         time.sleep(random.uniform(0.5, 2))
