@@ -21,7 +21,7 @@ df.fillna({'track_name': 'Unknown', 'artist(s)_name': 'Unknown', 'streams': 0, '
 # Initialize the Kafka producer
 producer = KafkaProducer(
     bootstrap_servers='localhost:9092',
-    value_serializer=lambda v: json.dumps(v).encode('utf-8')
+    value_serializer=lambda v: json.dumps(v).encode('utf-8')  # Ensures JSON serialization
 )
 
 # Define the Kafka topic
@@ -42,12 +42,17 @@ def send_data():
             'artist': random_row['artist(s)_name'],
             'streams': random_streams,  # Simulated new stream count
             'genre': random_row['genre'],
+            'valence': round(random.uniform(0, 1), 2),  # Random valence score between 0 and 1
+            'energy': round(random.uniform(0, 1), 2),  # Random energy level
+            'danceability': round(random.uniform(0, 1), 2),  # Random danceability level
             'timestamp': datetime.utcnow().isoformat()
         }
 
+        # Debugging: Print message before sending
+        print(f"DEBUG: Message being sent to Kafka: {json.dumps(message, indent=2)}")
+
         # Send the message to Kafka
-        producer.send(KAFKA_TOPIC, message)
-        print(f"Sent: {message}")
+        producer.send(KAFKA_TOPIC, value=message)
 
         # Random delay between messages (0.5 to 2 seconds)
         time.sleep(random.uniform(0.5, 2))
