@@ -51,7 +51,10 @@ def send_data():
                 hours=random.randint(0, 23), 
                 minutes=random.randint(0, 59)
             )
-        ).isoformat()
+        ).strftime('%Y-%m-%d %H:%M:%S')  # Convert to human-readable format
+
+        # DEBUG: Print generated timestamp
+        print(f"DEBUG: Generated timestamp: {random_timestamp}")
 
         # Create the message
         message = {
@@ -74,3 +77,4 @@ def send_data():
 
 # Start streaming indefinitely
 send_data()
+

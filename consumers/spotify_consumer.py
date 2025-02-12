@@ -30,14 +30,17 @@ for message in consumer:
     # Read the message as a dictionary (already deserialized)
     data = message.value
 
-    # Debugging: Print the full received message
-    print(f"DEBUG: Full received message: {json.dumps(data, indent=2)}")
+    # DEBUG: Print received message timestamp
+    print(f"DEBUG: Received message timestamp: {data['timestamp']}")
 
     track = data.get('track', 'Unknown')
     artist = data.get('artist', 'Unknown')
     streams = data.get('streams', 0)
     genre = data.get('genre', 'Unknown')
-    timestamp = data.get('timestamp', 'Unknown')
+    timestamp = data.get('timestamp', None) # Ensure timestamp is extracted
+
+    # DEBUG: Print extracted timestamp to confirm it's being used
+    print(f"DEBUG: Extracted timestamp before insertion: {timestamp}")
 
     # Extract valence, energy, and danceability properly
     valence = float(data.get("valence", 0.5))
@@ -53,9 +56,10 @@ for message in consumer:
     # Debugging: Print computed sentiment score
     print(f"DEBUG: Computed Sentiment Score: {sentiment_score}")
 
-    # Store in SQLite database
+    # Store in SQLite database (make sure the correct timestamp is inserted)
     insert_stream(track, artist, streams, genre, sentiment_score, timestamp)
 
-    print(f"✅ Stored in DB: {track} | {artist} | Streams: {streams} | Sentiment: {sentiment_score}")
+    print(f"✅ Stored in DB: {track} | {artist} | Streams: {streams} | Sentiment: {sentiment_score} | Timestamp: {timestamp}")
+
 
     time.sleep(0.5)  # Simulating processing time
