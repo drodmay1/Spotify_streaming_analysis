@@ -1,3 +1,7 @@
 .venv/
 .env
 data/spotify.db
+.venv
+env/
+venv/
+
