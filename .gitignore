@@ -1,7 +1,10 @@
+# Virtual environment
 .venv/
-.env
-data/spotify.db
-.venv
 env/
 venv/
 
+# Environment variables
+.env
+
+# Database file
+data/spotify.db
