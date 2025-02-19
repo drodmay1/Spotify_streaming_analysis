@@ -17,7 +17,7 @@ def load_data():
     conn = sqlite3.connect(DB_PATH)
     query = "SELECT track, artist, streams, genre, timestamp FROM spotify_streams"
     df = pd.read_sql(query, conn)
-    df["timestamp"] = pd.to_datetime(df["timestamp"])
+    df["timestamp"] = pd.to_datetime(df["timestamp"], errors="coerce", infer_datetime_format=True)
     conn.close()
     return df
 
