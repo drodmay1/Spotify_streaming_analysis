@@ -7,7 +7,7 @@ from kafka import KafkaProducer
 from datetime import datetime, timedelta
 
 # Path to the dataset
-file_path = 'data/Spotify_Dataset.csv'  # Ensure correct path and filename
+file_path = 'producers/data/Spotify_Dataset.csv'
 
 # Debugging: Print absolute path to check if the file exists
 absolute_path = os.path.abspath(file_path)
