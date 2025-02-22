@@ -50,8 +50,8 @@ mv /path/to/Spotify_Dataset.csv data/
 ### **Start Kafka and Zookeeper**
 Mac Linux
 ```
-bash zookeeper-server-start.sh ../config/zookeeper.properties
-bash kafka-server-start.sh ../config/server.properties
+bin/zookeeper-server-start.sh ../config/zookeeper.properties
+bin/kafka-server-start.sh ../config/server.properties
 ```
 
 Windows-PowerShell
